@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class DontRotateCameraWithPlayer : MonoBehaviour
 {
-    public GameObject Player;
+    public GameObject Player; //Игрок
 
     void FixedUpdate()
     {
-        transform.position = new Vector3(Player.transform.position.x, transform.position.y, Player.transform.position.z-7);
+        transform.position = new Vector3(Player.transform.position.x, transform.position.y, Player.transform.position.z-7);           //перемещение камаре за игроком
     }
 }
