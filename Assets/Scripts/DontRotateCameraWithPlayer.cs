@@ -9,6 +9,6 @@ public class DontRotateCameraWithPlayer : MonoBehaviour
 
     void FixedUpdate()
     {
-        transform.position = new Vector3(Player.transform.position.x, transform.position.y, Player.transform.position.z-7);           //перемещение камаре за игроком
+        transform.position = new Vector3(Player.transform.position.x, transform.position.y, Player.transform.position.z-7);           //перемещение камеры за игроком
     }
 }
