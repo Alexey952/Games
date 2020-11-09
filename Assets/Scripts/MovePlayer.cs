@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -15,9 +14,10 @@ public class MovePlayer : MonoBehaviour
     private float    FirePlayerHorizontal;     //переменная в которую записываеться значение положения джостика огня по вертикали(ось x)
     private float    FirePlayerVertical;       //переменная в которую записываеться значение положения джостика огня по вертикали(ось Z)
     private float    SpeedPlayerMove = 0.1f;   //скорость перемещения игрока
-    private float    SpeedRotatePlayer = 100f; //скорость врщения игрока
     private Vector3  MoveVector;               //вектор вращение игрока и перемещения
     private Vector3  FireVector;               //вектор огня
+
+
 
     void FixedUpdate()
     {
@@ -28,13 +28,24 @@ public class MovePlayer : MonoBehaviour
         MoveVector = new Vector3(MovePlayerHorizontal, 0, MovePlayerVertical);
         FireVector = new Vector3(FirePlayerHorizontal, 0, FirePlayerVertical);
         transform.Translate(MoveVector * SpeedPlayerMove, Space.World);                //Перемещение игрока по вектору с опредеоенной скоростью
-        if (FirePlayerHorizontal == 0 && FirePlayerVertical == 0)
+        if ((FirePlayerHorizontal == 0f && FirePlayerVertical == 0f) && (MovePlayerHorizontal != 0f && MovePlayerVertical != 0f))
         {
-            transform.LookAt(MoveVector * SpeedRotatePlayer);                              //поворот игрока джостиком перемещения
+            transform.rotation = Quaternion.LookRotation(MoveVector, Vector3.up);                             //поворот игрока джостиком перемещения
         }
-        else
+        else if (FirePlayerHorizontal != 0f && FirePlayerVertical != 0f)
         {
-            transform.LookAt(FireVector * SpeedRotatePlayer);                           //поворот игрока джостиком огня
+            transform.rotation = Quaternion.LookRotation(FireVector, Vector3.up);                          //поворот игрока джостиком огня
+            Shoot();
         }
+    }
+    void Shoot()
+    {
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position, transform.forward, out hit, 10))
+        {
+            Debug.Log("ggg");
+        }
+        Debug.DrawRay(transform.position, transform.forward*10, Color.red);
     }
 }
