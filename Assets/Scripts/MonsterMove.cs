@@ -5,12 +5,21 @@ using UnityEngine.AI;
 
 public class MonsterMove : MonoBehaviour
 {
-    [SerializeField]            //это чтобы видеть agent в инспекторе
-    NavMeshAgent agent;
-    public GameObject Player;
+    NavMeshAgent              agent;
+    public       GameObject   Player;       //игрок
+    public      float        HP = 3f;      //HP противника
 
+    void Start()
+    {
+        Player = GameObject.FindWithTag("Player");
+        agent = gameObject.GetComponent<NavMeshAgent>();
+    }
     void FixedUpdate()
     {
         agent.SetDestination(Player.transform.position);      //задание места назначения для бота
+        if (HP <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }
