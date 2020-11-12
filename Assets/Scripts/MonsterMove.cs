@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class MonsterMove : MonoBehaviour
 {
-    NavMeshAgent              agent;
+    NavMeshAgent              agent;        //навигация ботов
     public       GameObject   Player;       //игрок
     public      float        HP = 3f;      //HP противника
 
@@ -19,7 +19,8 @@ public class MonsterMove : MonoBehaviour
         agent.SetDestination(Player.transform.position);      //задание места назначения для бота
         if (HP <= 0)
         {
-            Destroy(gameObject);
+            PlayerPrefs.SetInt("MoneyInGame", PlayerPrefs.GetInt("MoneyInGame")+10); //зачисление денег за килл
+            Destroy(gameObject); //удаление
         }
     }
 }

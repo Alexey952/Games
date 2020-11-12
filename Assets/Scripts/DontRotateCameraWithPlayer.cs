@@ -10,13 +10,13 @@ public class DontRotateCameraWithPlayer : MonoBehaviour
     void FixedUpdate()
     {
         transform.position = new Vector3(Player.transform.position.x, transform.position.y, Player.transform.position.z-7);           //перемещение камеры за игроком
-        RaycastHit hit;
+        RaycastHit hit; //луч
 
         if (Physics.Raycast(transform.position, transform.forward, out hit))
         {
             if (hit.collider.gameObject.tag != "Player")
             {
-                //hit.collider.gameObject.GetComponent<MeshRenderer>().material.color.a = 255;
+                //hit.collider.gameObject.GetComponent<MeshRenderer>().material.color.a *= 0.5f;
                 Debug.Log("You dont see player?");
             }
         }

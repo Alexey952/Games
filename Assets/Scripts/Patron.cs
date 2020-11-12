@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class Patron : MonoBehaviour
 {
-    private float      SpeedPatron = 10;
-    public  GameObject EffectPopadania;
+    private float      SpeedPatron = 10;        //скорость патрон
+    public  GameObject EffectPopadania;         //эффект попадания патроны во что-то
 
     void Start()
     {
-        Destroy(gameObject, 1f);
+        Destroy(gameObject, 1f);        //удаление через 1 секунду по спавна(можно регулировать дальность стрельбы)
     }   
     void FixedUpdate()
     {
-        transform.position += transform.forward * SpeedPatron * Time.deltaTime;
+        transform.position += transform.forward * SpeedPatron * Time.deltaTime;     //перемещение
     }
-    void OnCollisionEnter(Collision other)
+    void OnCollisionEnter(Collision other)      //столкновение с разными обьектами(враг или стена)
     {
         if (other.gameObject.tag == "Monster")
         {
@@ -23,8 +23,9 @@ public class Patron : MonoBehaviour
             Instantiate(EffectPopadania, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
-        if (other.gameObject.tag != "Monster" && other.gameObject.tag != "Player")
+        if (other.gameObject.tag == "Untagged")
         {
+            Instantiate(EffectPopadania, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
     }

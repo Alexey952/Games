@@ -6,6 +6,6 @@ public class DeleteEffect : MonoBehaviour
 {
     void Start()
     {
-        Destroy(gameObject, 2f);
+        Destroy(gameObject, 2f);  //тут все и так понятно
     }
 }
