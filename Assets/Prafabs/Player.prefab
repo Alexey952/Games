@@ -241,9 +241,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveJoystick: {fileID: 0}
   FireJoystick: {fileID: 0}
-  ZonaAttaki: {fileID: 0}
-  Monster: {fileID: 2549775060556386878, guid: 9b50845887c90af42932af4cd8b20ef0, type: 3}
+  ZonaAttaki: {fileID: 129037294362157302}
   EffectPopadania: {fileID: 4006740145339677383, guid: 6157fbc49c680084d9dbd2f07513ba8c, type: 3}
+  Patron: {fileID: 651827487174335467, guid: d2d808cb8af1c514888a5876a4c1c0c8, type: 3}
+  WeaponImage: {fileID: 0}
+  ContinueButton: {fileID: 0}
+  VolumText: {fileID: 0}
+  VolumSlider: {fileID: 0}
+  PatronShow: {fileID: 0}
+  Money: {fileID: 0}
+  spr1: {fileID: 21300000, guid: b816f3d6b15697a469d3987e4691e56c, type: 3}
+  spr3: {fileID: 21300000, guid: 4c0dba9ac5c43a8418f90a1317ece767, type: 3}
 --- !u!54 &6929806455718963929
 Rigidbody:
   m_ObjectHideFlags: 0
