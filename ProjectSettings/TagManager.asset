@@ -10,6 +10,9 @@ TagManager:
   - VolSlid
   - TextVol
   - Continue
+  - RotCamera
+  - MoveJoystick
+  - FireJoystick
   layers:
   - Default
   - TransparentFX

@@ -12,7 +12,8 @@ public class MusicControler : MonoBehaviour
     void Start()
     {
         DontDestroyOnLoad(gameObject);
-        SceneManager.LoadScene("Main");
+        SceneManager.LoadScene(1);
+        PlayerPrefs.SetInt("SceneLoading", 2);
     }
     void Update()
     {

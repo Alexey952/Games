@@ -132,9 +132,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b237c0af88331c84f9b5abbc3d1f94cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 2549775060556386877}
   Player: {fileID: 6929806455718963911, guid: c2626a62f0498c44a9c0d7e30d5e5cf4, type: 3}
   HP: 3
+  dict: 1
 --- !u!54 &2549775060556386759
 Rigidbody:
   m_ObjectHideFlags: 0

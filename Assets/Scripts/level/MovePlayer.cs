@@ -5,12 +5,13 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System;
 
 public class MovePlayer : MonoBehaviour
 {
 
-    public  Joystick        MoveJoystick;                 //джостик перемещения
-    public  Joystick        FireJoystick;                 //джостик стрельбы
+    private Joystick        MoveJoystick;                 //джостик перемещения
+    private Joystick        FireJoystick;                 //джостик стрельбы
     private float           MovePlayerHorizontal;         //переменная в которую записываеться значение положения джостика перемещения по горизонтали(ось X)
     private float           MovePlayerVertical;           //переменная в которую записываеться значение положения джостика перемещения по вертикали(ось Z)
     private float           FirePlayerHorizontal;         //переменная в которую записываеться значение положения джостика огня по вертикали(ось x)
@@ -20,9 +21,13 @@ public class MovePlayer : MonoBehaviour
     private float           nextFire;                     //время между выстрелами
     private float           fireRate = 1;                 //скорострельность
     private float           TimeReloading = 2;            //время перезарядки оружия
+    private float           X1;
+    private float           Z1;
     private int             PatronInMagazin = 6;          //патроны в магазине
     private int             Magazin = 10;                 //кол_во магазинов
     private int             MoneyInThisGame;              //деньги
+    private double          Cosi;
+    private double          Sini;
     private bool            TimeReloadingMagazin = false; //когда прекратить перезарядку
     private bool            BoolScene = true;
     private string          WhatScene;
@@ -34,7 +39,9 @@ public class MovePlayer : MonoBehaviour
     public  GameObject      WeaponImage;                  //кнопка смены оружия
     public  GameObject      ContinueButton;               //кнопка прожолжнния игру по нажатия паузы
     public  GameObject      VolumText;
-    public  GameObject      VolumSlider;
+    private GameObject      VolumSlider;
+    private GameObject      RotCamera;
+    private GameObject      LOX;
     public  TextMeshProUGUI PatronShow;                   //показатель кол-ва патрон
     public  TextMeshProUGUI Money;                        //показывает кол-во денег
     public  Sprite          spr1,spr3;                    //спрайты оружия
@@ -43,7 +50,6 @@ public class MovePlayer : MonoBehaviour
 
     void  Start()
     {
-        VolumSlider.GetComponent<Slider>().value = PlayerPrefs.GetFloat("MusicVolum");
         //InvokeRepeating("Shoot", 1f,5f);
         WhatScene = SceneManager.GetActiveScene().name;
         if (WhatScene == "Main")
@@ -61,9 +67,21 @@ public class MovePlayer : MonoBehaviour
         ContinueButton.SetActive(false);
         VolumSlider.SetActive(false);
         VolumText.SetActive(false);
+        PlayerPrefs.SetFloat("PlayerHPnow", PlayerPrefs.GetFloat("PlayerHP"));
+        RotCamera = GameObject.FindGameObjectWithTag("RotCamera");
+        LOX = GameObject.FindGameObjectWithTag("MoveJoystick");
+        MoveJoystick = LOX.GetComponent<Joystick>();
+        LOX = GameObject.FindGameObjectWithTag("FireJoystick");
+        FireJoystick = LOX.GetComponent<Joystick>();
+        VolumSlider.GetComponent<Slider>().value = PlayerPrefs.GetFloat("MusicVolum");
     }
     void FixedUpdate()
     {
+        if (PlayerPrefs.GetFloat("PlayerHPnow") <= 0)
+        {
+            PlayerPrefs.SetInt("SceneLoading", 2);
+            SceneManager.LoadScene(1);
+        }
         MovePlayerHorizontal = MoveJoystick.Horizontal;              //считывание показаний с джостика
         MovePlayerVertical = MoveJoystick.Vertical;                  //тоже
         FirePlayerHorizontal = FireJoystick.Horizontal;              //и это
@@ -82,13 +100,25 @@ public class MovePlayer : MonoBehaviour
         }
         MoveVector = new Vector3(MovePlayerHorizontal, 0, MovePlayerVertical);
         FireVector = new Vector3(FirePlayerHorizontal, 0, FirePlayerVertical);
-        transform.Translate(MoveVector * SpeedPlayerMove, Space.World);                //Перемещение игрока по вектору с опредеоенной скоростью
+        transform.Translate(MoveVector * SpeedPlayerMove, RotCamera.transform);                //Перемещение игрока по вектору с опредеоенной скоростью
         if ((FirePlayerHorizontal == 0f && FirePlayerVertical == 0f) && (MovePlayerHorizontal != 0f && MovePlayerVertical != 0f))
         {
+            Sini = Math.Sin(RotCamera.transform.rotation.eulerAngles.y*Math.PI/180);
+            Cosi = Math.Cos(RotCamera.transform.rotation.eulerAngles.y*Math.PI/180);
+            X1 = (float)(MoveVector.x*Cosi + MoveVector.z*Sini);
+            Z1 = (float)(MoveVector.z*Cosi - MoveVector.x*Sini);
+            MoveVector.x = X1;
+            MoveVector.z = Z1;
             transform.rotation = Quaternion.LookRotation(MoveVector, Vector3.up);                             //поворот игрока джостиком перемещения
         }
         else if (FirePlayerHorizontal != 0f && FirePlayerVertical != 0f)
         {
+            Sini = Math.Sin(RotCamera.transform.rotation.eulerAngles.y*Math.PI/180);
+            Cosi = Math.Cos(RotCamera.transform.rotation.eulerAngles.y*Math.PI/180);
+            X1 = (float)(FireVector.x*Cosi + FireVector.z*Sini);
+            Z1 = (float)(FireVector.z*Cosi - FireVector.x*Sini);
+            FireVector.x = X1;
+            FireVector.z = Z1;
             transform.rotation = Quaternion.LookRotation(FireVector, Vector3.up);                          //поворот игрока джостиком огня
             if (BoolScene)
             {
@@ -101,7 +131,7 @@ public class MovePlayer : MonoBehaviour
                         Shoot();
                         PatronInMagazin -- ;
                     }
-                    else if (PatronInMagazin == 0)
+                    else if (PatronInMagazin == 0)   
                     {
                         TimeReloadingMagazin = true;
                     }                                                                                           //тут все сложно
@@ -177,14 +207,7 @@ public class MovePlayer : MonoBehaviour
         ContinueButton.SetActive(false);
         VolumSlider.SetActive(false);
         VolumText.SetActive(false);
-    }/*
-    public void Joystick()
-    {
-        if ((-0.5f<FirePlayerHorizontal) && (0.5f>FirePlayerHorizontal) && (-0.5f<FirePlayerVertical) && (0.5f>FirePlayerVertical))
-        {
-            Debug.Log("dhdgjdtj");
-        }
-    }*/
+    }
     public void SetVolum(float vol)
     {
         PlayerPrefs.SetFloat("MusicVolum", vol);
