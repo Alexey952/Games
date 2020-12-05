@@ -13,6 +13,9 @@ TagManager:
   - RotCamera
   - MoveJoystick
   - FireJoystick
+  - SoundSlid
+  - canvas
+  - Joystick
   layers:
   - Default
   - TransparentFX

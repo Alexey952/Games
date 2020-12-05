@@ -8,7 +8,6 @@ public class PlayerHP : MonoBehaviour
 
     public  Image      image;
     private float      HP;
-
     void Update()
     {
         HP = PlayerPrefs.GetFloat("PlayerHPnow")/PlayerPrefs.GetFloat("PlayerHP");

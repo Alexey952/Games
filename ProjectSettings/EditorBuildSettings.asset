@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Map2.unity
     guid: 43053465fdc1aef448a6fc3cf66076a9
+  - enabled: 1
+    path: Assets/Scenes/JoystickSettings.unity
+    guid: 2d3f0430eeca48a4ea886c76709fec0c
   m_configObjects: {}

@@ -17,8 +17,7 @@ public class DontRotateCameraWithPlayer : MonoBehaviour
         {
             if (hit.collider.gameObject.tag != "Player")
             {
-                if (hit.collider.gameObject!=wall)
-                    wall = hit.collider.gameObject;
+                wall = hit.collider.gameObject;
                 Color color = hit.collider.gameObject.GetComponent<MeshRenderer>().material.color;
                 color.a = 0.5f;
                 hit.collider.gameObject.GetComponent<MeshRenderer>().material.color = color;
