@@ -15,11 +15,11 @@ public class Patron : MonoBehaviour
     {
         transform.position += transform.forward * SpeedPatron * Time.deltaTime;     //перемещение
     }
-    void OnCollisionEnter(Collision other)      //столкновение с разными обьектами(враг или стена)
+    void OnTriggerEnter(Collider other)      //столкновение с разными обьектами(враг или стена)
     {
         if (other.gameObject.tag == "Monster")
         {
-            other.collider.gameObject.GetComponent<MonsterMove>().HP -= 1;
+            other.gameObject.GetComponent<MonsterMove>().HP -= 1;
             Instantiate(EffectPopadania, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }

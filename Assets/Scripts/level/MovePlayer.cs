@@ -23,7 +23,6 @@ public class MovePlayer : MonoBehaviour
     private float           TimeReloading = 2;            //время перезарядки оружия
     private float           X1;
     private float           Z1;
-    private float           L;
     private int             PatronInMagazin = 6;          //патроны в магазине
     private int             Magazin = 10;                 //кол_во магазинов
     private int             MoneyInThisGame;              //деньги
@@ -31,17 +30,13 @@ public class MovePlayer : MonoBehaviour
     private double          Sini;
     private bool            TimeReloadingMagazin = false; //когда прекратить перезарядку
     private bool            BoolScene = true;
+    private bool            DontShoot = false;
     private string          WhatScene;
     private Vector3         MoveVector;                   //вектор вращение игрока и перемещения
     private Vector3         FireVector;                   //вектор огня
     public  GameObject      ZonaAttaki;                   //зона атаки    
     public  GameObject      EffectPopadania;              //эффект попадания в цель
     public  GameObject      Patron;                       //префаб патрона
-    public  GameObject      WeaponImage;                  //кнопка смены оружия
-    public  GameObject      ContinueButton;               //кнопка прожолжнния игру по нажатия паузы
-    public  GameObject      VolumText;
-    private GameObject      VolumSlider;
-    private GameObject      SoundsSlider;
     private GameObject      RotCamera;
     private GameObject      LOX;
     private GameObject      Obj;
@@ -50,18 +45,16 @@ public class MovePlayer : MonoBehaviour
     public  GameObject      Floating;
     public  GameObject      Variable;
     private GameObject      canvas;
+    private GameObject      canvasnorm;
+    public  GameObject      reloadbuttom;
     public  TextMeshProUGUI PatronShow;                   //показатель кол-ва патрон
     public  TextMeshProUGUI Money;                        //показывает кол-во денег
-    public  Sprite          spr1,spr3;                    //спрайты оружия
 
 
 
     void  Start()
     {
-        foreach (var res in Screen.resolutions)
-        {
-            L = res.width;
-        }
+        PlayerPrefs.SetInt("Reload", 0);
         //InvokeRepeating("Shoot", 1f,5f);
         WhatScene = SceneManager.GetActiveScene().name;
         if (WhatScene == "Main" || WhatScene == "JoystickSettings")
@@ -72,9 +65,14 @@ public class MovePlayer : MonoBehaviour
         {
             PlayerPrefs.SetInt("MoneyInGame", 0);
         }
+        canvas = GameObject.FindGameObjectWithTag("canvas");
+        canvasnorm = GameObject.FindGameObjectWithTag("canvasnorm");
+        if (WhatScene != "Main")
+        {
+            Instantiate(reloadbuttom, new Vector3(PlayerPrefs.GetFloat("ReloadX"), PlayerPrefs.GetFloat("ReloadY"),0), Quaternion.identity, canvasnorm.transform);
+        }
         if (WhatScene != "JoystickSettings")
         {
-            canvas = GameObject.FindGameObjectWithTag("canvas");
             if (PlayerPrefs.GetInt("Joystick") == 0)
             {
                 Obj = Instantiate(Dinamic, new Vector3(PlayerPrefs.GetFloat("OthJoystickXM"), PlayerPrefs.GetFloat("OthJoystickYM"),0), Quaternion.identity, canvas.transform);
@@ -83,7 +81,7 @@ public class MovePlayer : MonoBehaviour
                 Obj.GetComponent<RectTransform>().pivot = new Vector2(0f,0f);
                 Obj.tag = "MoveJoystick";
                 Obj.transform.localScale = new Vector3(PlayerPrefs.GetFloat("ScaleJoystick"),PlayerPrefs.GetFloat("ScaleJoystick"),PlayerPrefs.GetFloat("ScaleJoystick"));
-                Obj = Instantiate(Dinamic, new Vector3(-L+PlayerPrefs.GetFloat("OthJoystickXF"), PlayerPrefs.GetFloat("OthJoystickYF"),0), Quaternion.identity, canvas.transform);
+                Obj = Instantiate(Dinamic, new Vector3(PlayerPrefs.GetFloat("OthJoystickXF"), PlayerPrefs.GetFloat("OthJoystickYF"),0), Quaternion.identity, canvas.transform);
                 Obj.GetComponent<RectTransform>().anchorMax = new Vector2(1f,0f);
                 Obj.GetComponent<RectTransform>().anchorMin = new Vector2(1f,0f);
                 Obj.GetComponent<RectTransform>().pivot = new Vector2(1f,0f);
@@ -95,13 +93,13 @@ public class MovePlayer : MonoBehaviour
                 Obj = Instantiate(Fixed, new Vector3(PlayerPrefs.GetFloat("FixJoystickXM"), PlayerPrefs.GetFloat("FixJoystickYM"),0f), Quaternion.identity, canvas.transform);
                 Obj.GetComponent<RectTransform>().anchorMax = new Vector2(0f,0f);
                 Obj.GetComponent<RectTransform>().anchorMin = new Vector2(0f,0f);
-                Obj.GetComponent<RectTransform>().pivot = new Vector2(0f,0f);
+                Obj.GetComponent<RectTransform>().pivot = new Vector2(0.5f,0.5f);
                 Obj.tag = "MoveJoystick";
                 Obj.transform.localScale = new Vector3(PlayerPrefs.GetFloat("ScaleJoystick"),PlayerPrefs.GetFloat("ScaleJoystick"),PlayerPrefs.GetFloat("ScaleJoystick"));
-                Obj = Instantiate(Fixed, new Vector3(-L+PlayerPrefs.GetFloat("FixJoystickXF"), PlayerPrefs.GetFloat("FixJoystickYF"),0), Quaternion.identity, canvas.transform);
-                Obj.GetComponent<RectTransform>().anchorMax = new Vector2(1f,0f);
-                Obj.GetComponent<RectTransform>().anchorMin = new Vector2(1f,0f);
-                Obj.GetComponent<RectTransform>().pivot = new Vector2(1f,0f);
+                Obj = Instantiate(Fixed, new Vector3(PlayerPrefs.GetFloat("FixJoystickXF"), PlayerPrefs.GetFloat("FixJoystickYF"),0), Quaternion.identity, canvas.transform);
+                Obj.GetComponent<RectTransform>().anchorMax = new Vector2(0f,0f);
+                Obj.GetComponent<RectTransform>().anchorMin = new Vector2(0f,0f);
+                Obj.GetComponent<RectTransform>().pivot = new Vector2(0.5f,0.5f);
                 Obj.tag = "FireJoystick";
                 Obj.transform.localScale = new Vector3(PlayerPrefs.GetFloat("ScaleJoystick"),PlayerPrefs.GetFloat("ScaleJoystick"),PlayerPrefs.GetFloat("ScaleJoystick"));
             }
@@ -113,24 +111,13 @@ public class MovePlayer : MonoBehaviour
                 Obj.GetComponent<RectTransform>().pivot = new Vector2(0f,0f);
                 Obj.tag = "MoveJoystick";
                 Obj.transform.localScale = new Vector3(PlayerPrefs.GetFloat("ScaleJoystick"),PlayerPrefs.GetFloat("ScaleJoystick"),PlayerPrefs.GetFloat("ScaleJoystick"));
-                Obj = Instantiate(Floating, new Vector3(-L+PlayerPrefs.GetFloat("OthJoystickXF"),PlayerPrefs.GetFloat("OthJoystickYF"),0), Quaternion.identity, canvas.transform);
+                Obj = Instantiate(Floating, new Vector3(PlayerPrefs.GetFloat("OthJoystickXF"),PlayerPrefs.GetFloat("OthJoystickYF"),0), Quaternion.identity, canvas.transform);
                 Obj.GetComponent<RectTransform>().anchorMax = new Vector2(1f,0f);
                 Obj.GetComponent<RectTransform>().anchorMin = new Vector2(1f,0f);
                 Obj.GetComponent<RectTransform>().pivot = new Vector2(1f,0f);
                 Obj.tag = "FireJoystick";
                 Obj.transform.localScale = new Vector3(PlayerPrefs.GetFloat("ScaleJoystick"),PlayerPrefs.GetFloat("ScaleJoystick"),PlayerPrefs.GetFloat("ScaleJoystick"));
             }
-            WeaponImage = GameObject.FindGameObjectWithTag("Weapon");
-            VolumText = GameObject.FindGameObjectWithTag("TextVol");
-            VolumSlider = GameObject.FindGameObjectWithTag("VolSlid");
-            SoundsSlider = GameObject.FindGameObjectWithTag("SoundSlid");
-            ContinueButton = GameObject.FindGameObjectWithTag("Continue");
-            ContinueButton.SetActive(false);
-            VolumText.SetActive(false);
-            VolumSlider.GetComponent<Slider>().value = PlayerPrefs.GetFloat("MusicVolum");
-            SoundsSlider.GetComponent<Slider>().value = PlayerPrefs.GetFloat("SoundsVolume");
-            VolumSlider.SetActive(false);
-            SoundsSlider.SetActive(false);
         }
         PlayerPrefs.SetFloat("PlayerHPnow", PlayerPrefs.GetFloat("PlayerHP"));
         RotCamera = GameObject.FindGameObjectWithTag("RotCamera");
@@ -177,6 +164,7 @@ public class MovePlayer : MonoBehaviour
         transform.Translate(MoveVector * SpeedPlayerMove, RotCamera.transform);                //Перемещение игрока по вектору с опредеоенной скоростью
         if ((FirePlayerHorizontal == 0f && FirePlayerVertical == 0f) && (MovePlayerHorizontal != 0f && MovePlayerVertical != 0f))
         {
+            ZonaAttaki.SetActive(false);
             Sini = Math.Sin(RotCamera.transform.rotation.eulerAngles.y*Math.PI/180);
             Cosi = Math.Cos(RotCamera.transform.rotation.eulerAngles.y*Math.PI/180);
             X1 = (float)Math.Round((MoveVector.x*Cosi + MoveVector.z*Sini), 2);
@@ -204,8 +192,9 @@ public class MovePlayer : MonoBehaviour
         {
             ZonaAttaki.SetActive(false);
         } 
-        if (TimeReloadingMagazin)  //перезарядка
+        if (TimeReloadingMagazin || PlayerPrefs.GetInt("Reload") == 1)  //перезарядка
         {
+            DontShoot = true;
             TimeReloading -= Time.deltaTime;
             if (TimeReloading < 0)
                     {
@@ -216,6 +205,8 @@ public class MovePlayer : MonoBehaviour
                         }
                         TimeReloading = 2;
                         TimeReloadingMagazin = false;
+                        PlayerPrefs.SetInt("Reload", 0);
+                        DontShoot = false;
                     }
         }
         if (BoolScene)
@@ -234,7 +225,7 @@ public class MovePlayer : MonoBehaviour
     }
     void Shoot()        //функция стрельбы
     {
-        if (Time.time > nextFire)                                                                      //стрельба                                                                         
+        if (Time.time > nextFire && DontShoot == false)                                                                      //стрельба                                                                         
         {
             nextFire = Time.time + 1f / fireRate;
             if (PatronInMagazin > 0)
@@ -259,40 +250,5 @@ public class MovePlayer : MonoBehaviour
             }
         }
         */
-    }
-    public void WeaponImages()          //функция смены оружия
-    {
-        if (WeaponImage.GetComponent<Image>().sprite == spr1)
-        {
-            WeaponImage.GetComponent<Image>().sprite = spr3;
-        }
-        else
-        {
-            WeaponImage.GetComponent<Image>().sprite = spr1;
-        }
-    }
-    public void Pause()                         //пауза
-    {
-        Time.timeScale = 0;
-        ContinueButton.SetActive(true);
-        VolumSlider.SetActive(true);
-        VolumText.SetActive(true);
-        SoundsSlider.SetActive(true);
-    }
-    public void Continue()                  //продолжение
-    {
-        Time.timeScale = 1;
-        ContinueButton.SetActive(false);
-        VolumSlider.SetActive(false);
-        VolumText.SetActive(false);
-        SoundsSlider.SetActive(false);
-    }
-    public void SetVolum()
-    {
-        PlayerPrefs.SetFloat("MusicVolum", VolumSlider.GetComponent<Slider>().value);
-    }
-    public void SetVolumeZ()
-    {
-        PlayerPrefs.SetFloat("SoundsVolume", SoundsSlider.GetComponent<Slider>().value);
     }
 }

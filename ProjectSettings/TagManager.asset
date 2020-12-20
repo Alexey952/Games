@@ -16,6 +16,8 @@ TagManager:
   - SoundSlid
   - canvas
   - Joystick
+  - Reload
+  - canvasnorm
   layers:
   - Default
   - TransparentFX

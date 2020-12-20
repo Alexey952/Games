@@ -9,7 +9,7 @@ public class MonsterMove : MonoBehaviour
     public       GameObject   Player;       //игрок
     public       float        HP = 3f;      //HP противника
     private      float        HPP;          //HP playera;
-    public       float        dict = 2f;
+    private      float        dict = 2f;
     private      float        TimeYdar = -1f;
     public       float        Damage = 1;
 
@@ -17,15 +17,10 @@ public class MonsterMove : MonoBehaviour
     {
         Player = GameObject.FindWithTag("Player");
         agent = gameObject.GetComponent<NavMeshAgent>();
+        StartCoroutine("Monster");
     }
     void FixedUpdate()
     {
-        agent.SetDestination(Player.transform.position);      //задание места назначения для бота
-        if (HP <= 0)
-        {
-            PlayerPrefs.SetInt("MoneyInGame", PlayerPrefs.GetInt("MoneyInGame")+10); //зачисление денег за килл
-            Destroy(gameObject); //удаление
-        }
         if (Vector3.Distance(transform.position, Player.transform.position)<dict && TimeYdar<0)
         {
             HPP = PlayerPrefs.GetFloat("PlayerHPnow") - Damage;
@@ -33,5 +28,21 @@ public class MonsterMove : MonoBehaviour
             TimeYdar = 2f;
         }
         TimeYdar -= Time.deltaTime;
+        if (HP <= 0)
+        {
+            PlayerPrefs.SetInt("MoneyInGame", PlayerPrefs.GetInt("MoneyInGame")+10); //зачисление денег за килл
+            Destroy(gameObject); //удаление
+        }
+    }
+    IEnumerator Monster()
+    {
+        while (true)
+        {
+            if (Player != null)
+            {
+                agent.SetDestination(Player.transform.position);//задание места назначения для бота
+            }
+            yield return new WaitForSeconds(.5f);
+        }
     }
 }

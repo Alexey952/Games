@@ -25,7 +25,7 @@ public class PositonJostick : MonoBehaviour, IDragHandler
                     PlayerPrefs.SetFloat("OthJoystickYM", eventData.position.y);
                 }
             }
-            else
+            else if (gameObject.tag == "FireJoystick")
             {
                 if (PlayerPrefs.GetInt("Joystick") == 1)
                 {

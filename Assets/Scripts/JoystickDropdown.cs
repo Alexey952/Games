@@ -14,16 +14,11 @@ public class JoystickDropdown : MonoBehaviour
     public  GameObject         Fixed;
     public  GameObject         Floating;
     public  GameObject         Variable;
-    private Joystick           Joy;    
-    private float              L = 2960f;     
+    private Joystick           Joy;        
     
 
     void Start()
     {
-        foreach (var res in Screen.resolutions)
-        {
-            L = res.width;
-        }
         Joy = GameObject.FindGameObjectWithTag("Joystick").GetComponent<Joystick>();
         canvas = GameObject.FindGameObjectWithTag("canvas");
         dropdown.value = PlayerPrefs.GetInt("Joystick");
@@ -43,7 +38,7 @@ public class JoystickDropdown : MonoBehaviour
             Obj.GetComponent<RectTransform>().anchorMin = new Vector2(0f,0f);
             Obj.GetComponent<RectTransform>().pivot = new Vector2(0f,0f);
             Obj.tag = "MoveJoystick";
-            Obj1 = Instantiate(Dinamic, new Vector3(-L+PlayerPrefs.GetFloat("OthJoystickXF"), PlayerPrefs.GetFloat("OthJoystickYF"),0), Quaternion.identity, canvas.transform);
+            Obj1 = Instantiate(Dinamic, new Vector3(PlayerPrefs.GetFloat("OthJoystickXF"), PlayerPrefs.GetFloat("OthJoystickYF"),0), Quaternion.identity, canvas.transform);
             Obj1.GetComponent<RectTransform>().anchorMax = new Vector2(1f,0f);
             Obj1.GetComponent<RectTransform>().anchorMin = new Vector2(1f,0f);
             Obj1.GetComponent<RectTransform>().pivot = new Vector2(1f,0f);
@@ -56,9 +51,9 @@ public class JoystickDropdown : MonoBehaviour
             Obj.GetComponent<RectTransform>().anchorMin = new Vector2(0f,0f);
             Obj.GetComponent<RectTransform>().pivot = new Vector2(0.5f,0.5f);
             Obj.tag = "MoveJoystick";
-            Obj1 = Instantiate(Fixed, new Vector3(-L+PlayerPrefs.GetFloat("FixJoystickXF"), PlayerPrefs.GetFloat("FixJoystickYF"),0), Quaternion.identity, canvas.transform);
-            Obj1.GetComponent<RectTransform>().anchorMax = new Vector2(1f,0f);
-            Obj1.GetComponent<RectTransform>().anchorMin = new Vector2(1f,0f);
+            Obj1 = Instantiate(Fixed, new Vector3(PlayerPrefs.GetFloat("FixJoystickXF"), PlayerPrefs.GetFloat("FixJoystickYF"),0), Quaternion.identity, canvas.transform);
+            Obj1.GetComponent<RectTransform>().anchorMax = new Vector2(0f,0f);
+            Obj1.GetComponent<RectTransform>().anchorMin = new Vector2(0f,0f);
             Obj1.GetComponent<RectTransform>().pivot = new Vector2(0.5f,0.5f);
             Obj1.tag = "FireJoystick";
         }
@@ -69,7 +64,7 @@ public class JoystickDropdown : MonoBehaviour
             Obj.GetComponent<RectTransform>().anchorMin = new Vector2(0f,0f);
             Obj.GetComponent<RectTransform>().pivot = new Vector2(0f,0f);
             Obj.tag = "MoveJoystick";
-            Obj1 = Instantiate(Floating, new Vector3(-L+PlayerPrefs.GetFloat("OthJoystickXF"),PlayerPrefs.GetFloat("OthJoystickYF"),0), Quaternion.identity, canvas.transform);
+            Obj1 = Instantiate(Floating, new Vector3(PlayerPrefs.GetFloat("OthJoystickXF"),PlayerPrefs.GetFloat("OthJoystickYF"),0), Quaternion.identity, canvas.transform);
             Obj1.GetComponent<RectTransform>().anchorMax = new Vector2(1f,0f);
             Obj1.GetComponent<RectTransform>().anchorMin = new Vector2(1f,0f);
             Obj1.GetComponent<RectTransform>().pivot = new Vector2(1f,0f);

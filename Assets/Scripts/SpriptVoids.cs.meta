@@ -3,7 +3,11 @@ guid: 4b684ec951c47a34581a92614bb49498
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - spr1: {fileID: 21300000, guid: b816f3d6b15697a469d3987e4691e56c, type: 3}
+  - spr3: {fileID: 21300000, guid: 4c0dba9ac5c43a8418f90a1317ece767, type: 3}
+  - ContinueButton: {instanceID: 0}
+  - VolumText: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
